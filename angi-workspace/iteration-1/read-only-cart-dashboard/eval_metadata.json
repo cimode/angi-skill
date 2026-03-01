@@ -1,0 +1,27 @@
+{
+  "eval_id": 3,
+  "eval_name": "read-only-cart-dashboard",
+  "prompt": "I have a dashboard with an OrderSummaryCard component that shows the user's current cart: items (array), subtotal, discount, and total. I don't want Claude to be able to modify the cart at all — I just want it to be able to answer questions like 'what's in my cart?' or 'what's my total?' from the real live data. How do I set this up?",
+  "assertions": [
+    {
+      "text": "Uses permissions={[\"read\"]} with NO 'write' permission",
+      "id": "uses_read_only_permission"
+    },
+    {
+      "text": "Does NOT define any actions (or passes an empty actions object)",
+      "id": "no_write_actions"
+    },
+    {
+      "text": "getState returns all four fields: items, subtotal, discount, and total",
+      "id": "getstate_has_all_cart_fields"
+    },
+    {
+      "text": "Explains what Claude will be able to do with the read-only data (answer questions about cart)",
+      "id": "explains_read_capability"
+    },
+    {
+      "text": "Clearly distinguishes read-only from read+write and explains why the developer would choose read-only",
+      "id": "explains_read_vs_write"
+    }
+  ]
+}

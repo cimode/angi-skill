@@ -1,0 +1,39 @@
+{
+  "eval_id": 2,
+  "eval_name": "product-filter-component",
+  "prompt": "I already have Angi set up in my project. I have a ProductFilterPanel component with React state for: category (string), priceMin/priceMax (numbers), inStockOnly (boolean), and sortBy (string). I want users to be able to say things like 'show me electronics under $200 in stock, sorted by rating'. How do I make this component AI-addressable?",
+  "assertions": [
+    {
+      "text": "Shows <Angi> boundary wrapper with permissions including 'write'",
+      "id": "has_angi_boundary_with_write"
+    },
+    {
+      "text": "Calls useAngiComponent with a description that mentions filtering/search",
+      "id": "has_use_angi_component"
+    },
+    {
+      "text": "getState includes all 4 state values: category, priceMin, priceMax (or similar), inStockOnly, sortBy",
+      "id": "getstate_has_all_filter_values"
+    },
+    {
+      "text": "Defines separate granular actions for category, price range, stock status, and sort",
+      "id": "has_granular_actions"
+    },
+    {
+      "text": "Price-related action schema uses 'number' type for min/max values",
+      "id": "price_schema_uses_number"
+    },
+    {
+      "text": "Stock filter action schema uses 'boolean' type for inStockOnly",
+      "id": "stock_schema_uses_boolean"
+    },
+    {
+      "text": "Includes a clearFilters or reset action",
+      "id": "has_clear_action"
+    },
+    {
+      "text": "execute functions reference the actual setState calls (not just describe them)",
+      "id": "execute_calls_setstate"
+    }
+  ]
+}

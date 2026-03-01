@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angi Skill — Eval Results (Iteration 1)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a2e; }
+    header { background: #1a1a2e; color: white; padding: 24px 32px; }
+    header h1 { font-size: 22px; font-weight: 700; }
+    header p { font-size: 13px; color: #aaa; margin-top: 4px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+    /* Summary bar */
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+    .stat { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-bottom: 6px; }
+    .stat-value { font-size: 32px; font-weight: 700; }
+    .stat-value.green { color: #16a34a; }
+    .stat-value.red { color: #dc2626; }
+    .stat-value.blue { color: #2563eb; }
+    .stat-sub { font-size: 12px; color: #888; margin-top: 2px; }
+
+    /* Eval cards */
+    .eval-card { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 28px; overflow: hidden; }
+    .eval-header { display: flex; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid #f0f0f0; }
+    .eval-num { background: #1a1a2e; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .eval-name { font-weight: 600; font-size: 15px; flex: 1; }
+    .score-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .score-pass { background: #dcfce7; color: #16a34a; }
+    .score-fail { background: #fee2e2; color: #dc2626; }
+    .score-partial { background: #fef9c3; color: #ca8a04; }
+
+    .eval-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .side { padding: 20px 24px; }
+    .side:first-child { border-right: 1px solid #f0f0f0; }
+    .side-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px; }
+    .side-label.green { color: #16a34a; }
+    .side-label.red { color: #dc2626; }
+
+    .assertion { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid #fafafa; align-items: flex-start; }
+    .assertion:last-child { border-bottom: none; }
+    .check { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; margin-top: 1px; }
+    .check.pass { background: #dcfce7; color: #16a34a; }
+    .check.fail { background: #fee2e2; color: #dc2626; }
+    .assertion-text { font-size: 13px; color: #333; line-height: 1.4; }
+    .assertion-note { font-size: 11px; color: #888; margin-top: 2px; }
+
+    .hallucination-box { background: #fff7ed; border-left: 3px solid #f97316; border-radius: 4px; padding: 10px 12px; margin-top: 12px; }
+    .hallucination-box p { font-size: 11px; font-weight: 700; color: #c2410c; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .hallucination-box ul { padding-left: 14px; }
+    .hallucination-box li { font-size: 12px; color: #9a3412; margin-bottom: 3px; }
+
+    .notable-box { background: #f0fdf4; border-left: 3px solid #16a34a; border-radius: 4px; padding: 10px 12px; margin-top: 12px; }
+    .notable-box p { font-size: 12px; color: #15803d; font-style: italic; }
+
+    .prompt-box { background: #f8f9fa; border-radius: 8px; padding: 14px 18px; margin: 16px 24px; font-size: 13px; color: #555; line-height: 1.5; border-left: 3px solid #e5e7eb; }
+    .prompt-label { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+
+    footer { text-align: center; padding: 40px; font-size: 12px; color: #aaa; }
+
+    @media (max-width: 700px) {
+      .eval-body { grid-template-columns: 1fr; }
+      .summary { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Angi Skill — Eval Results</h1>
+    <p>Iteration 1 · 5 evals · 10 runs · Graded 2026-02-28</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="stat">
+        <div class="stat-label">With Skill</div>
+        <div class="stat-value green">100%</div>
+        <div class="stat-sub">34 / 34 assertions pass</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Without Skill (Baseline)</div>
+        <div class="stat-value red">65%</div>
+        <div class="stat-sub">22 / 34 assertions pass</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Skill Improvement</div>
+        <div class="stat-value blue">+35 pp</div>
+        <div class="stat-sub">percentage points gained</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Skill File</div>
+        <div class="stat-value" style="font-size:14px;margin-top:6px;color:#555;">SKILL.md</div>
+        <div class="stat-sub">.claude/skills/angi/SKILL.md</div>
+      </div>
+    </div>
+
+    <!-- Eval 1 -->
+    <div class="eval-card">
+      <div class="eval-header">
+        <div class="eval-num">1</div>
+        <div class="eval-name">Fresh Project Setup</div>
+        <span class="score-badge score-pass">With: 9/9</span>
+        <span class="score-badge score-fail">Without: 2/9</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-label">Prompt</div>
+        I'm building a Next.js 15 app and I want to integrate @angi-ai/angi from scratch. My app has a contact form (name, email, message) and I want users to say things like "fill the name with John and email with john@example.com." Walk me through everything I need to set up.
+      </div>
+      <div class="eval-body">
+        <div class="side">
+          <div class="side-label green">✓ With Skill — 9/9</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Server route using AngiAgent + processRequestStream</div><div class="assertion-note">Correct imports from @angi-ai/angi/server</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">AngiNextProvider wrapping children in layout</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">AngiChatBubble on page</div><div class="assertion-note">Correctly shown as sibling of &lt;Angi&gt;, not nested</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">&lt;Angi&gt; boundary with id + permissions in parent</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">useAngiComponent with description, getState, actions</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">getState includes name, email, message</div><div class="assertion-note">Bonus: computed filledFields array</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">execute functions call setState</div><div class="assertion-note">setName/setEmail/setMessage called</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Mentions ANTHROPIC_API_KEY</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">npm install @angi-ai/angi @anthropic-ai/sdk</div></div></div>
+        </div>
+        <div class="side">
+          <div class="side-label red">✗ Without Skill — 2/9</div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">Server route using AngiAgent + processRequestStream</div><div class="assertion-note">Used createAngiHandler from @angi-ai/angi/next (hallucinated)</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">AngiNextProvider in layout</div><div class="assertion-note">Not shown at all</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">AngiChatBubble on page</div><div class="assertion-note">Not shown</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">&lt;Angi&gt; boundary in parent</div><div class="assertion-note">Not shown</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">useAngiComponent with description, getState, actions</div><div class="assertion-note">Used useAngi({apiRoute}) returning {ref, input, setInput}</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">getState includes name, email, message</div><div class="assertion-note">Used data-angi-id DOM scanning (doesn't exist)</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">execute functions call setState</div><div class="assertion-note">No execute functions at all</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Mentions ANTHROPIC_API_KEY</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">npm install command</div></div></div>
+          <div class="hallucination-box">
+            <p>🚨 Hallucinated APIs</p>
+            <ul>
+              <li>createAngiHandler from @angi-ai/angi/next</li>
+              <li>useAngi({apiRoute}) → {ref, input, setInput}</li>
+              <li>data-angi-id DOM attributes</li>
+              <li>ref attached to form element</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 2 -->
+    <div class="eval-card">
+      <div class="eval-header">
+        <div class="eval-num">2</div>
+        <div class="eval-name">Product Filter Component</div>
+        <span class="score-badge score-pass">With: 8/8</span>
+        <span class="score-badge score-partial">Without: 5/8</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-label">Prompt</div>
+        I already have Angi set up. I have a ProductFilterPanel with state for category, priceMin/priceMax, inStockOnly, and sortBy. I want users to say "show me electronics under $200 in stock, sorted by rating." How do I make this component AI-addressable?
+      </div>
+      <div class="eval-body">
+        <div class="side">
+          <div class="side-label green">✓ With Skill — 8/8</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">&lt;Angi&gt; boundary with write permission</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">useAngiComponent with filtering description</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">getState includes all 5 filter values</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Granular actions per filter</div><div class="assertion-note">7 actions: setCategory, setPriceMin, setPriceMax, setPriceRange, setInStockOnly, setSortBy, clearAllFilters</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Price schema uses "number" type</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Stock filter schema uses "boolean" type</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">clearAllFilters / reset action</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">execute functions call setState</div></div></div>
+        </div>
+        <div class="side">
+          <div class="side-label red">✗ Without Skill — 5/8</div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">&lt;Angi&gt; boundary with write permission</div><div class="assertion-note">Used AngiProvider wrapping whole app (wrong)</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">useAngiComponent with filtering description</div><div class="assertion-note">Used useAngi() → {register, unregister} (wrong API)</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">getState includes all filter values</div><div class="assertion-note">No getState — wrong registration pattern</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Granular actions per filter</div><div class="assertion-note">Correct concept, wrong API (array with handler)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Price schema uses "number" type</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Stock filter schema uses "boolean" type</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">reset action</div><div class="assertion-note">resetFilters action present</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Handlers call setState</div><div class="assertion-note">Named 'handler' not 'execute' but calls setFilters</div></div></div>
+          <div class="hallucination-box">
+            <p>🚨 Hallucinated APIs</p>
+            <ul>
+              <li>useAngi() returning {register, unregister}</li>
+              <li>Actions as array [{name, parameters, handler}]</li>
+              <li>useEffect register/unregister lifecycle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 3 -->
+    <div class="eval-card">
+      <div class="eval-header">
+        <div class="eval-num">3</div>
+        <div class="eval-name">Read-Only Cart Dashboard</div>
+        <span class="score-badge score-pass">With: 5/5</span>
+        <span class="score-badge score-pass">Without: 5/5 ⭐</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-label">Prompt</div>
+        I have a dashboard with an OrderSummaryCard showing cart items, subtotal, discount, and total. I don't want Claude to modify the cart — just answer questions like "what's in my cart?" from the real live data. How do I set this up?
+      </div>
+      <div class="eval-body">
+        <div class="side">
+          <div class="side-label green">✓ With Skill — 5/5</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">permissions={["read"]} — no write</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">No actions defined</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">getState returns items, subtotal, discount, total</div><div class="assertion-note">Bonus: itemCount and lineTotal computed fields</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Explains what Claude can do (read-only)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Explains read vs read+write distinction</div></div></div>
+        </div>
+        <div class="side">
+          <div class="side-label green">✓ Without Skill — 5/5</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">permissions={["read"]} — no write</div><div class="assertion-note">Correct! Claude knows this concept without the skill</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">No actions (intentionally omitted)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">getState returns all 4 cart fields</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Explains read capability</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Explains two enforcement layers (client + server)</div></div></div>
+          <div class="notable-box">
+            <p>⭐ Notably good baseline — Claude correctly handled permissions={["read"]} and the no-actions pattern. Minor issues: imports from @angi-ai/angi instead of @angi-ai/angi/client, and AngiNextProvider has a spurious endpoint prop.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 4 -->
+    <div class="eval-card">
+      <div class="eval-header">
+        <div class="eval-num">4</div>
+        <div class="eval-name">Hotel Booking Form Action Design</div>
+        <span class="score-badge score-pass">With: 8/8</span>
+        <span class="score-badge score-partial">Without: 7/8</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-label">Prompt</div>
+        I'm working on a booking form: check-in date, check-out date, number of guests, room type (standard/deluxe/suite), and special requests. Angi is already installed. What actions should I define so users can say "book a deluxe room for 2 guests from March 15 to March 18" or "add a note that we need a crib"?
+      </div>
+      <div class="eval-body">
+        <div class="side">
+          <div class="side-label green">✓ With Skill — 8/8</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">useAngiComponent with hotel description</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Separate check-in date action</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Separate check-out date action</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Guests action with "number" schema</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Room type action listing standard/deluxe/suite</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Special requests action</div><div class="assertion-note">Both setSpecialRequests (replace) and addSpecialRequest (append)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">getState has all booking fields</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Granular actions (separate per field)</div><div class="assertion-note">Explains WHY in Key Design Principles section</div></div></div>
+        </div>
+        <div class="side">
+          <div class="side-label red">✗ Without Skill — 7/8</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">useAngiComponent called</div><div class="assertion-note">Tries to destructure {ref, userMessage} (wrong, but called)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Check-in action (setCheckInDate)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Check-out action (setCheckOutDate)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Guests with number type</div><div class="assertion-note">Uses parameters.type: 'number' (wrong key but right intent)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Room type with options listed</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Special requests action</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">getState has all booking fields</div><div class="assertion-note">Used `state: formState` instead of `getState: () => formState`</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Granular actions</div></div></div>
+          <div class="hallucination-box">
+            <p>🚨 Hallucinated APIs</p>
+            <ul>
+              <li>useAngiComponent returning {ref, userMessage}</li>
+              <li>state: instead of getState:</li>
+              <li>parameters + handler instead of schema + execute</li>
+              <li>enum field in schema (doesn't exist)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 5 -->
+    <div class="eval-card">
+      <div class="eval-header">
+        <div class="eval-num">5</div>
+        <div class="eval-name">Async Execute Question</div>
+        <span class="score-badge score-pass">With: 4/4</span>
+        <span class="score-badge score-partial">Without: 3/4</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-label">Prompt</div>
+        Quick question — in my Angi component, can I make the execute function async? Like I want to submit to my API when Claude calls the action, not just update local state.
+      </div>
+      <div class="eval-body">
+        <div class="side">
+          <div class="side-label green">✓ With Skill — 4/4</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Confirms async is supported</div><div class="assertion-note">"Yes — execute fully supports async/await"</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Code example with async keyword on execute</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Example shows actual API call (fetch)</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Explains execute is plain JS</div><div class="assertion-note">Closure capture, loading state, error handling all shown</div></div></div>
+        </div>
+        <div class="side">
+          <div class="side-label red">✗ Without Skill — 3/4</div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Confirms async is supported</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Code example with async keyword</div></div></div>
+          <div class="assertion"><div class="check pass">✓</div><div><div class="assertion-text">Example shows fetch API call</div></div></div>
+          <div class="assertion"><div class="check fail">✗</div><div><div class="assertion-text">Explains execute is plain JS</div><div class="assertion-note">Wrongly states return value goes to Claude; uses setState as second arg (hallucinated)</div></div></div>
+          <div class="hallucination-box">
+            <p>🚨 Hallucinated APIs</p>
+            <ul>
+              <li>createAction() function (doesn't exist)</li>
+              <li>AngiComponent type with render method</li>
+              <li>execute(params, { setState }) second argument</li>
+              <li>Return value passed back to Claude (false)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key findings -->
+    <div style="background:white;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:28px 32px;margin-bottom:28px;">
+      <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;">Key Findings</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <h3 style="font-size:13px;font-weight:600;color:#16a34a;margin-bottom:10px;">✓ What the Skill Fixed</h3>
+          <ul style="font-size:13px;color:#444;line-height:1.8;padding-left:16px;">
+            <li>Correct imports (<code>@angi-ai/angi/client</code> vs <code>/server</code>)</li>
+            <li>AngiAgent + processRequestStream (not createAngiHandler)</li>
+            <li>AngiNextProvider in layout (not AngiProvider)</li>
+            <li>useAngiComponent pattern (not useAngi register/unregister)</li>
+            <li><code>getState: () =&gt; {...}</code> (not <code>state: {...}</code>)</li>
+            <li><code>schema</code> + <code>execute</code> (not <code>parameters</code> + <code>handler</code>)</li>
+            <li>execute returns void (not passed to Claude)</li>
+            <li>&lt;Angi&gt; boundary in parent, not inside component</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="font-size:13px;font-weight:600;color:#2563eb;margin-bottom:10px;">★ Baseline Strengths (no skill needed)</h3>
+          <ul style="font-size:13px;color:#444;line-height:1.8;padding-left:16px;">
+            <li>Permissions concept (read vs write) — well understood</li>
+            <li>Async execute pattern — partially correct</li>
+            <li>Action granularity — intuitively correct</li>
+            <li>npm install + ANTHROPIC_API_KEY — always correct</li>
+            <li>Boolean/number schema types — usually correct</li>
+          </ul>
+          <h3 style="font-size:13px;font-weight:600;color:#dc2626;margin-bottom:10px;margin-top:16px;">✗ Baseline Consistent Failures</h3>
+          <ul style="font-size:13px;color:#444;line-height:1.8;padding-left:16px;">
+            <li>Every non-trivial API surface hallucinated</li>
+            <li>Worst on fresh setup (2/9) — all architecture wrong</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div style="background:white;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:28px 32px;">
+      <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;">Files</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:1px solid #f0f0f0;">
+          <td style="padding:8px 0;font-weight:600;color:#555;width:200px;">Skill</td>
+          <td style="padding:8px 0;font-family:monospace;color:#2563eb;">.claude/skills/angi/SKILL.md</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;">
+          <td style="padding:8px 0;font-weight:600;color:#555;">Evals</td>
+          <td style="padding:8px 0;font-family:monospace;color:#2563eb;">.claude/skills/angi/evals/evals.json</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;">
+          <td style="padding:8px 0;font-weight:600;color:#555;">Benchmark</td>
+          <td style="padding:8px 0;font-family:monospace;color:#2563eb;">.claude/skills/angi-workspace/iteration-1/benchmark.json</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-weight:600;color:#555;">Responses</td>
+          <td style="padding:8px 0;font-family:monospace;color:#2563eb;">.claude/skills/angi-workspace/iteration-1/{eval-name}/{with,without}_skill/outputs/response.md</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+  <footer>Angi Skill Evaluator · Iteration 1</footer>
+</body>
+</html>

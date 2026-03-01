@@ -1,0 +1,182 @@
+{
+  "iteration": 1,
+  "skill_path": "/Users/cristian.moreno.tech/.claude/skills/angi/SKILL.md",
+  "graded_at": "2026-02-28",
+  "summary": {
+    "with_skill_score": 34,
+    "with_skill_max": 34,
+    "with_skill_pct": 100.0,
+    "without_skill_score": 22,
+    "without_skill_max": 34,
+    "without_skill_pct": 64.7,
+    "delta_pct": 35.3,
+    "evals_run": 5,
+    "runs_per_eval": 2
+  },
+  "evals": [
+    {
+      "eval_id": 1,
+      "eval_name": "fresh-project-setup",
+      "prompt": "I'm building a Next.js 15 app and I want to integrate @angi-ai/angi from scratch. I've never used it before. My app has a contact form (name, email, message fields) and I want users to be able to say things like 'fill the name with John and email with john@example.com' and have the form fill itself. Walk me through everything I need to set up.",
+      "total_assertions": 9,
+      "with_skill": {
+        "score": 9,
+        "pct": 100.0,
+        "assertions": [
+          { "id": "has_server_route", "text": "Includes a server route (app/api/angi/route.ts) using AngiAgent with processRequestStream", "pass": true, "note": "AngiAgent + processRequestStream shown correctly" },
+          { "id": "has_provider_in_layout", "text": "Shows AngiNextProvider wrapping children in the layout", "pass": true, "note": "AngiNextProvider in app/layout.tsx" },
+          { "id": "has_chat_bubble", "text": "Includes AngiChatBubble on the page", "pass": true, "note": "AngiChatBubble shown as sibling of Angi boundary" },
+          { "id": "has_angi_boundary", "text": "Shows <Angi> boundary wrapper with id and permissions props in the page/parent", "pass": true, "note": "<Angi id='contact-form' permissions={['read','write']}>" },
+          { "id": "has_use_angi_component", "text": "Calls useAngiComponent inside the form component with description, getState, and actions", "pass": true, "note": "All three keys present" },
+          { "id": "getstate_has_all_fields", "text": "getState includes all three fields: name, email, and message", "pass": true, "note": "name, email, message + bonus filledFields computed" },
+          { "id": "execute_calls_setstate", "text": "execute functions call setState (not just describe the action)", "pass": true, "note": "setName/setEmail/setMessage called in execute" },
+          { "id": "mentions_api_key", "text": "Mentions ANTHROPIC_API_KEY environment variable", "pass": true, "note": "ANTHROPIC_API_KEY in .env.local step" },
+          { "id": "shows_install_command", "text": "Includes npm install command with both @angi-ai/angi and @anthropic-ai/sdk", "pass": true, "note": "npm install @angi-ai/angi @anthropic-ai/sdk" }
+        ]
+      },
+      "without_skill": {
+        "score": 2,
+        "pct": 22.2,
+        "hallucinations": ["createAngiHandler from @angi-ai/angi/next", "useAngi({apiRoute}) returning {ref, input, setInput}", "data-angi-id DOM attributes", "ref attached to form"],
+        "assertions": [
+          { "id": "has_server_route", "pass": false, "note": "Used createAngiHandler (hallucinated) instead of AngiAgent + processRequestStream" },
+          { "id": "has_provider_in_layout", "pass": false, "note": "No AngiNextProvider in layout shown" },
+          { "id": "has_chat_bubble", "pass": false, "note": "No AngiChatBubble shown" },
+          { "id": "has_angi_boundary", "pass": false, "note": "No <Angi> boundary shown" },
+          { "id": "has_use_angi_component", "pass": false, "note": "Used useAngi({apiRoute}) returning {ref, input, setInput} — completely hallucinated" },
+          { "id": "getstate_has_all_fields", "pass": false, "note": "No getState — used data-angi-id DOM scanning (doesn't exist)" },
+          { "id": "execute_calls_setstate", "pass": false, "note": "No execute functions defined" },
+          { "id": "mentions_api_key", "pass": true, "note": "ANTHROPIC_API_KEY in env" },
+          { "id": "shows_install_command", "pass": true, "note": "npm install @angi-ai/angi @anthropic-ai/sdk" }
+        ]
+      }
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "product-filter-component",
+      "prompt": "I already have Angi set up in my project. I have a ProductFilterPanel component with React state for: category (string), priceMin/priceMax (numbers), inStockOnly (boolean), and sortBy (string). I want users to be able to say things like 'show me electronics under $200 in stock, sorted by rating'. How do I make this component AI-addressable?",
+      "total_assertions": 8,
+      "with_skill": {
+        "score": 8,
+        "pct": 100.0,
+        "assertions": [
+          { "id": "has_angi_boundary_with_write", "pass": true, "note": "<Angi id='product-filter-panel' permissions={['read','write']}>" },
+          { "id": "has_use_angi_component", "pass": true, "note": "useAngiComponent with filtering description" },
+          { "id": "getstate_has_all_filter_values", "pass": true, "note": "All 5 values: category, priceMin, priceMax, inStockOnly, sortBy" },
+          { "id": "has_granular_actions", "pass": true, "note": "7 granular actions: setCategory, setPriceMin, setPriceMax, setPriceRange, setInStockOnly, setSortBy, clearAllFilters" },
+          { "id": "price_schema_uses_number", "pass": true, "note": "schema: { priceMin: 'number' } and { priceMax: 'number' }" },
+          { "id": "stock_schema_uses_boolean", "pass": true, "note": "schema: { inStockOnly: 'boolean' }" },
+          { "id": "has_clear_action", "pass": true, "note": "clearAllFilters resets all 5 values to defaults" },
+          { "id": "execute_calls_setstate", "pass": true, "note": "All execute functions call individual setState hooks" }
+        ]
+      },
+      "without_skill": {
+        "score": 5,
+        "pct": 62.5,
+        "hallucinations": ["useAngi() returning {register, unregister}", "AngiProvider (should be AngiNextProvider)", "actions as array with {name, parameters, handler}", "register/unregister lifecycle pattern"],
+        "assertions": [
+          { "id": "has_angi_boundary_with_write", "pass": false, "note": "No <Angi> boundary — used AngiProvider wrapping whole app" },
+          { "id": "has_use_angi_component", "pass": false, "note": "Used useAngi() returning {register, unregister} — wrong API" },
+          { "id": "getstate_has_all_filter_values", "pass": false, "note": "No getState — state not declared in registration" },
+          { "id": "has_granular_actions", "pass": true, "note": "Separate actions for category, price range, stock, sort (even if wrong API)" },
+          { "id": "price_schema_uses_number", "pass": true, "note": "parameters: { priceMin: { type: 'number' } }" },
+          { "id": "stock_schema_uses_boolean", "pass": true, "note": "parameters: { inStockOnly: { type: 'boolean' } }" },
+          { "id": "has_clear_action", "pass": true, "note": "resetFilters action present" },
+          { "id": "execute_calls_setstate", "pass": true, "note": "Handlers call setFilters (though named 'handler' not 'execute')" }
+        ]
+      }
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "read-only-cart-dashboard",
+      "prompt": "I have a dashboard with an OrderSummaryCard component that shows the user's current cart: items (array), subtotal, discount, and total. I don't want Claude to be able to modify the cart at all — I just want it to be able to answer questions like 'what's in my cart?' or 'what's my total?' from the real live data. How do I set this up?",
+      "total_assertions": 5,
+      "with_skill": {
+        "score": 5,
+        "pct": 100.0,
+        "assertions": [
+          { "id": "uses_read_only_permission", "pass": true, "note": "permissions={['read']} — no write" },
+          { "id": "no_write_actions", "pass": true, "note": "No actions key in useAngiComponent" },
+          { "id": "getstate_has_all_cart_fields", "pass": true, "note": "items, itemCount, subtotal, discount, total (bonus computed itemCount)" },
+          { "id": "explains_read_capability", "pass": true, "note": "What Claude Can and Cannot Do section with bullet examples" },
+          { "id": "explains_read_vs_write", "pass": true, "note": "Explains enforcement is in both buildTools (server) and handleChunk (client)" }
+        ]
+      },
+      "without_skill": {
+        "score": 5,
+        "pct": 100.0,
+        "notes": "Surprisingly strong baseline — correctly used permissions={['read']}, getState, no actions. Minor issues: imports from @angi-ai/angi instead of @angi-ai/angi/client, AngiNextProvider has spurious endpoint prop, uses useAngi() with {sendPrompt} which may not match exactly.",
+        "hallucinations_minor": ["import from @angi-ai/angi instead of @angi-ai/angi/client", "AngiNextProvider endpoint prop", "useAngi() returning {sendPrompt, isLoading, streamText} — the hook may exist but API uncertain"],
+        "assertions": [
+          { "id": "uses_read_only_permission", "pass": true, "note": "permissions={['read']} shown" },
+          { "id": "no_write_actions", "pass": true, "note": "Actions intentionally omitted" },
+          { "id": "getstate_has_all_cart_fields", "pass": true, "note": "items, subtotal, discount, total all present" },
+          { "id": "explains_read_capability", "pass": true, "note": "Explains state is in system prompt so Claude can answer questions" },
+          { "id": "explains_read_vs_write", "pass": true, "note": "Explains two enforcement layers: buildTools (server) and handleChunk (client)" }
+        ]
+      }
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "hotel-booking-form",
+      "prompt": "I'm working on a booking form for a hotel reservation system. The form has: check-in date, check-out date, number of guests, room type (standard/deluxe/suite), and special requests (text). Angi is already installed. What actions should I define so users can say things like 'book a deluxe room for 2 guests from March 15 to March 18' or 'add a note that we need a crib'? Show me the full useAngiComponent setup.",
+      "total_assertions": 8,
+      "with_skill": {
+        "score": 8,
+        "pct": 100.0,
+        "assertions": [
+          { "id": "has_use_angi_component", "pass": true, "note": "useAngiComponent with hotel booking description" },
+          { "id": "has_checkin_action", "pass": true, "note": "setCheckInDate action with schema: { date: 'string' }" },
+          { "id": "has_checkout_action", "pass": true, "note": "setCheckOutDate action" },
+          { "id": "has_guests_action_with_number_schema", "pass": true, "note": "setGuests with schema: { count: 'number' }" },
+          { "id": "has_room_type_action_with_options", "pass": true, "note": "setRoomType with standard/deluxe/suite in description" },
+          { "id": "has_special_requests_action", "pass": true, "note": "Both setSpecialRequests (replace) and addSpecialRequest (append)" },
+          { "id": "getstate_has_all_booking_fields", "pass": true, "note": "checkIn, checkOut, guests, roomType, specialRequests in getState" },
+          { "id": "actions_are_granular", "pass": true, "note": "Separate action per field + explains why in Key Design Principles section" }
+        ]
+      },
+      "without_skill": {
+        "score": 7,
+        "pct": 87.5,
+        "hallucinations": ["useAngiComponent returning {ref, userMessage}", "actions use parameters + handler instead of schema + execute", "state: formState instead of getState: () => formState", "enum field in parameters schema (doesn't exist)"],
+        "assertions": [
+          { "id": "has_use_angi_component", "pass": true, "note": "useAngiComponent called (wrong return destructuring but called)" },
+          { "id": "has_checkin_action", "pass": true, "note": "setCheckInDate action present (handler instead of execute)" },
+          { "id": "has_checkout_action", "pass": true, "note": "setCheckOutDate action present" },
+          { "id": "has_guests_action_with_number_schema", "pass": true, "note": "setNumberOfGuests with type: 'number' in parameters" },
+          { "id": "has_room_type_action_with_options", "pass": true, "note": "setRoomType with enum ['standard','deluxe','suite']" },
+          { "id": "has_special_requests_action", "pass": true, "note": "addSpecialRequest action present" },
+          { "id": "getstate_has_all_booking_fields", "pass": false, "note": "Uses `state: formState` instead of `getState: () => formState` — wrong API key" },
+          { "id": "actions_are_granular", "pass": true, "note": "Separate actions per field plus compound bookRoom action" }
+        ]
+      }
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "async-execute-question",
+      "prompt": "quick question — in my angi component, can I make the execute function async? like I want to submit to my API when Claude calls the action, not just update local state",
+      "total_assertions": 4,
+      "with_skill": {
+        "score": 4,
+        "pct": 100.0,
+        "assertions": [
+          { "id": "confirms_async_supported", "pass": true, "note": "Yes — execute fully supports async/await" },
+          { "id": "code_example_uses_async", "pass": true, "note": "execute: async () => { ... }" },
+          { "id": "example_shows_api_call", "pass": true, "note": "await fetch('/api/contact', {...}) shown" },
+          { "id": "explains_execute_is_plain_js", "pass": true, "note": "Closure capture, loading state, error handling — all plain React patterns" }
+        ]
+      },
+      "without_skill": {
+        "score": 3,
+        "pct": 75.0,
+        "hallucinations": ["createAction() function", "AngiComponent type with render", "execute(params, { setState }) — setState as second argument", "return value from execute passed to Claude"],
+        "assertions": [
+          { "id": "confirms_async_supported", "pass": true, "note": "Yes, fully supports async" },
+          { "id": "code_example_uses_async", "pass": true, "note": "execute: async ({ productId, quantity }) => {...}" },
+          { "id": "example_shows_api_call", "pass": true, "note": "await fetch('/api/orders', {...}) shown" },
+          { "id": "explains_execute_is_plain_js", "pass": false, "note": "Uses wrong API (createAction, AngiComponent with render, setState as second arg). States return value goes to Claude (false)." }
+        ]
+      }
+    }
+  ]
+}

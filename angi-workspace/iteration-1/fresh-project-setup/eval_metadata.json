@@ -1,0 +1,43 @@
+{
+  "eval_id": 1,
+  "eval_name": "fresh-project-setup",
+  "prompt": "I'm building a Next.js 15 app and I want to integrate @angi-ai/angi from scratch. I've never used it before. My app has a contact form (name, email, message fields) and I want users to be able to say things like 'fill the name with John and email with john@example.com' and have the form fill itself. Walk me through everything I need to set up.",
+  "assertions": [
+    {
+      "text": "Includes a server route (app/api/angi/route.ts) using AngiAgent with processRequestStream",
+      "id": "has_server_route"
+    },
+    {
+      "text": "Shows AngiNextProvider wrapping children in the layout",
+      "id": "has_provider_in_layout"
+    },
+    {
+      "text": "Includes AngiChatBubble on the page",
+      "id": "has_chat_bubble"
+    },
+    {
+      "text": "Shows <Angi> boundary wrapper with id and permissions props in the page/parent",
+      "id": "has_angi_boundary"
+    },
+    {
+      "text": "Calls useAngiComponent inside the form component with description, getState, and actions",
+      "id": "has_use_angi_component"
+    },
+    {
+      "text": "getState includes all three fields: name, email, and message",
+      "id": "getstate_has_all_fields"
+    },
+    {
+      "text": "execute functions call setState (not just describe the action)",
+      "id": "execute_calls_setstate"
+    },
+    {
+      "text": "Mentions ANTHROPIC_API_KEY environment variable",
+      "id": "mentions_api_key"
+    },
+    {
+      "text": "Includes npm install command with both @angi-ai/angi and @anthropic-ai/sdk",
+      "id": "shows_install_command"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "eval_id": 5,
+  "eval_name": "async-execute-question",
+  "prompt": "quick question — in my angi component, can I make the execute function async? like I want to submit to my API when Claude calls the action, not just update local state",
+  "assertions": [
+    {
+      "text": "Clearly confirms that execute can be async (yes answer given)",
+      "id": "confirms_async_supported"
+    },
+    {
+      "text": "Provides a code example with the 'async' keyword on the execute function",
+      "id": "code_example_uses_async"
+    },
+    {
+      "text": "Code example includes an actual API call (fetch or similar)",
+      "id": "example_shows_api_call"
+    },
+    {
+      "text": "Explains that execute is plain JavaScript — anything valid in a React component works",
+      "id": "explains_execute_is_plain_js"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "eval_id": 4,
+  "eval_name": "hotel-booking-form",
+  "prompt": "I'm working on a booking form for a hotel reservation system. The form has: check-in date, check-out date, number of guests, room type (standard/deluxe/suite), and special requests (text). Angi is already installed. What actions should I define so users can say things like 'book a deluxe room for 2 guests from March 15 to March 18' or 'add a note that we need a crib'? Show me the full useAngiComponent setup.",
+  "assertions": [
+    {
+      "text": "Calls useAngiComponent with a description relevant to hotel booking",
+      "id": "has_use_angi_component"
+    },
+    {
+      "text": "Defines a separate action for setting check-in date",
+      "id": "has_checkin_action"
+    },
+    {
+      "text": "Defines a separate action for setting check-out date",
+      "id": "has_checkout_action"
+    },
+    {
+      "text": "Defines an action for number of guests with 'number' schema type",
+      "id": "has_guests_action_with_number_schema"
+    },
+    {
+      "text": "Defines an action for selecting room type that mentions the valid options (standard/deluxe/suite)",
+      "id": "has_room_type_action_with_options"
+    },
+    {
+      "text": "Defines an action for adding/setting special requests",
+      "id": "has_special_requests_action"
+    },
+    {
+      "text": "getState includes all booking fields (dates, guests, room type, special requests)",
+      "id": "getstate_has_all_booking_fields"
+    },
+    {
+      "text": "Actions are kept granular (separate actions per field, not one combined action)",
+      "id": "actions_are_granular"
+    }
+  ]
+}
