@@ -1,0 +1,79 @@
+{
+  "skill_name": "angi",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a Next.js 15 app and I want to integrate @angi-ai/angi from scratch. I've never used it before. My app has a contact form (name, email, message fields) and I want users to be able to say things like 'fill the name with John and email with john@example.com' and have the form fill itself. Walk me through everything I need to set up.",
+      "expected_output": "A complete setup guide with working code for: (1) installing deps, (2) the server route at app/api/angi/route.ts using AngiAgent, (3) wrapping the layout with AngiNextProvider, (4) placing AngiChatBubble on the page, (5) a full ContactForm component using useAngiComponent with name/email/message fields, appropriate actions, and wrapped with <Angi> in the parent page. Code should be complete and copy-pasteable.",
+      "files": [],
+      "assertions": [
+        {"text": "Includes a server route using AngiAgent with processRequestStream", "id": "has_server_route"},
+        {"text": "Shows AngiNextProvider wrapping children in the layout", "id": "has_provider_in_layout"},
+        {"text": "Includes AngiChatBubble on the page", "id": "has_chat_bubble"},
+        {"text": "Shows <Angi> boundary wrapper with id and permissions props", "id": "has_angi_boundary"},
+        {"text": "Calls useAngiComponent with description, getState, and actions", "id": "has_use_angi_component"},
+        {"text": "getState includes all three fields: name, email, and message", "id": "getstate_has_all_fields"},
+        {"text": "execute functions call setState (not just describe the action)", "id": "execute_calls_setstate"},
+        {"text": "Mentions ANTHROPIC_API_KEY environment variable", "id": "mentions_api_key"},
+        {"text": "Includes npm install command with @angi-ai/angi and @anthropic-ai/sdk", "id": "shows_install_command"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I already have Angi set up in my project. I have a ProductFilterPanel component with React state for: category (string), priceMin/priceMax (numbers), inStockOnly (boolean), and sortBy (string). I want users to be able to say things like 'show me electronics under $200 in stock, sorted by rating'. How do I make this component AI-addressable?",
+      "expected_output": "Code showing: (1) <Angi> boundary wrapping ProductFilterPanel in the parent with appropriate id and permissions, (2) useAngiComponent call inside ProductFilterPanel with a good description, getState returning all filter values, and well-designed granular actions for each filter (filterByCategory, setPriceRange, toggleInStock, setSortOrder, clearFilters). Actions should have clear descriptions Claude can reason about and matching schemas.",
+      "files": [],
+      "assertions": [
+        {"text": "Shows <Angi> boundary wrapper with permissions including 'write'", "id": "has_angi_boundary_with_write"},
+        {"text": "Calls useAngiComponent with a description that mentions filtering/search", "id": "has_use_angi_component"},
+        {"text": "getState includes all 4 state values: category, priceMin, priceMax, inStockOnly, sortBy", "id": "getstate_has_all_filter_values"},
+        {"text": "Defines separate granular actions for category, price range, stock status, and sort", "id": "has_granular_actions"},
+        {"text": "Price-related action schema uses 'number' type for min/max values", "id": "price_schema_uses_number"},
+        {"text": "Stock filter action schema uses 'boolean' type for inStockOnly", "id": "stock_schema_uses_boolean"},
+        {"text": "Includes a clearFilters or reset action", "id": "has_clear_action"},
+        {"text": "execute functions reference actual setState calls", "id": "execute_calls_setstate"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I have a dashboard with an OrderSummaryCard component that shows the user's current cart: items (array), subtotal, discount, and total. I don't want Claude to be able to modify the cart at all — I just want it to be able to answer questions like 'what's in my cart?' or 'what's my total?' from the real live data. How do I set this up?",
+      "expected_output": "Code showing: (1) <Angi> boundary with permissions={[\"read\"]} only, (2) useAngiComponent with no actions (or empty actions), getState returning items/subtotal/discount/total, and a description that explains what data is available. Should clearly explain why read-only works this way and what Claude will be able to do with the data.",
+      "files": [],
+      "assertions": [
+        {"text": "Uses permissions={[\"read\"]} with NO 'write' permission", "id": "uses_read_only_permission"},
+        {"text": "Does NOT define any actions (or passes an empty actions object)", "id": "no_write_actions"},
+        {"text": "getState returns all four fields: items, subtotal, discount, and total", "id": "getstate_has_all_cart_fields"},
+        {"text": "Explains what Claude will be able to do with the read-only data", "id": "explains_read_capability"},
+        {"text": "Explains the difference between read-only and read+write", "id": "explains_read_vs_write"}
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I'm working on a booking form for a hotel reservation system. The form has: check-in date, check-out date, number of guests, room type (standard/deluxe/suite), and special requests (text). Angi is already installed. What actions should I define so users can say things like 'book a deluxe room for 2 guests from March 15 to March 18' or 'add a note that we need a crib'? Show me the full useAngiComponent setup.",
+      "expected_output": "A well-designed useAngiComponent call with: granular actions for setCheckIn, setCheckOut, setGuestCount, selectRoomType, addSpecialRequest, clearForm. Each action should have a clear description Claude can reason about, appropriate schemas (dates as strings, guests as number, roomType as string). getState should expose all current field values. Should explain why actions are kept granular.",
+      "files": [],
+      "assertions": [
+        {"text": "Calls useAngiComponent with a description relevant to hotel booking", "id": "has_use_angi_component"},
+        {"text": "Defines a separate action for setting check-in date", "id": "has_checkin_action"},
+        {"text": "Defines a separate action for setting check-out date", "id": "has_checkout_action"},
+        {"text": "Defines an action for number of guests with 'number' schema type", "id": "has_guests_action_with_number_schema"},
+        {"text": "Defines an action for room type that mentions valid options (standard/deluxe/suite)", "id": "has_room_type_action_with_options"},
+        {"text": "Defines an action for adding/setting special requests", "id": "has_special_requests_action"},
+        {"text": "getState includes all booking fields (dates, guests, room type, special requests)", "id": "getstate_has_all_booking_fields"},
+        {"text": "Actions are granular (separate actions per field, not one combined action)", "id": "actions_are_granular"}
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "quick question — in my angi component, can I make the execute function async? like I want to submit to my API when Claude calls the action, not just update local state",
+      "expected_output": "Clear confirmation that execute can be async, with a concrete code example showing an async execute that calls fetch/API, handles the response, and optionally navigates or updates state after. Should mention this is plain JavaScript and anything that works in a React component works in execute.",
+      "files": [],
+      "assertions": [
+        {"text": "Clearly confirms that execute can be async (gives a yes answer)", "id": "confirms_async_supported"},
+        {"text": "Provides a code example with the 'async' keyword on the execute function", "id": "code_example_uses_async"},
+        {"text": "Code example includes an actual API call (fetch or similar)", "id": "example_shows_api_call"},
+        {"text": "Explains that execute is plain JavaScript — anything valid in a React component works", "id": "explains_execute_is_plain_js"}
+      ]
+    }
+  ]
+}
